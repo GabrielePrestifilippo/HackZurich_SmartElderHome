@@ -1,2 +1,10 @@
-/**/
+#pageContent {
+	margin-top: 20px;
+	text-align: center;
+	padding: 20px;
+	font-size: 20px;
+}
 
+#connect {
+	display: none;
+}

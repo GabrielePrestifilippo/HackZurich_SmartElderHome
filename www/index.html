@@ -4,58 +4,62 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-	<meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+
+
+
+	<!-- All Javascript dependencies -->
 	<script src="js/peer.min.js"></script>
-
-
 	<script src="components/loader.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	<script src="lib/onsenui/js/onsenui.min.js"></script>
 	<script src="js/app.js"></script>
+
+	<!-- All style dependencies -->
 	<link rel="stylesheet" href="components/loader.css">
 	<link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
 	<link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
 	<link rel="stylesheet" href="css/style.css">
 
 </head>
 
 <body>
 	<ons-navigator id="myNavigator"></ons-navigator>
+	<!-- HOME PAGE-->
+	<ons-page>
 
-	<ons-template id="tab1.html">
-		<ons-page>
-			<ons-toolbar>
-				<div class="left topLeft">
-				</div>
-				<div class="topCenter center">
-					SmartElder
-				</div>
-				<div class="topRight right">
-				</div>
-			</ons-toolbar>
+		<!-- ToolBar -->
+		<ons-toolbar>
+			<div class="left topLeft">
+			</div>
+			<div class="topCenter center">
+				SmartElder
+			</div>
+			<div class="topRight right">
+			</div>
+		</ons-toolbar>
+		<!-- ToolBar -->
 
-
-			<span>I am</span>
-			<select id="client">
+		<!-- Content -->
+		<div id="pageContent">
+			<span class="initQuestion">I am: </span>
+			<br>
+			<select class="initQuestion" id="client">
 				<option value="tutor">Tutor</option>
-				<option value="home">Home</option>
+				<option value="home">Assisted Person</option>
 			</select>
-			<button id="create">Connect</button>
-
 			<br>
 			<br>
-			<button id="connect">Call</button>
-			<select id="server">
-				<option value="home">Home</option>
-				<option value="tutor">Tutor</option>
-			</select>
-
-
+			<ons-button class="initQuestion" id="create">Connect</ons-button>
+			<br>
+			<ons-button id="connect">Start call</ons-button>
 			<div class="card">
 				<audio id="contact-audio" autoplay></audio>
 			</div>
-		</ons-page>
-	</ons-template>
+		</div>
+		<!-- Content-->
+
+	</ons-page>
+	<!-- HOME PAGE-->
 
 
 </body>
