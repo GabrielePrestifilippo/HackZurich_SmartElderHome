@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<meta http-equiv="Content-Security-Policy" content="default-src * data:; style-src * 'unsafe-inline'; script-src * 'unsafe-inline' 'unsafe-eval'">
+	<script src="js/peer.min.js"></script>
+
+
+	<script src="components/loader.js"></script>
+	<script src="lib/onsenui/js/onsenui.min.js"></script>
+	<script src="js/app.js"></script>
+	<link rel="stylesheet" href="components/loader.css">
+	<link rel="stylesheet" href="lib/onsenui/css/onsenui.css">
+	<link rel="stylesheet" href="lib/onsenui/css/onsen-css-components.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+	<link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+	<ons-navigator id="myNavigator"></ons-navigator>
+
+	<ons-template id="tab1.html">
+		<ons-page>
+			<ons-toolbar>
+				<div class="left topLeft">
+				</div>
+				<div class="topCenter center">
+					SmartElder
+				</div>
+				<div class="topRight right">
+				</div>
+			</ons-toolbar>
+
+
+			<span>I am</span>
+			<select id="client">
+				<option value="tutor">Tutor</option>
+				<option value="home">Home</option>
+			</select>
+			<button id="create">Connect</button>
+
+			<br>
+			<br>
+			<button id="connect">Call</button>
+			<select id="server">
+				<option value="home">Home</option>
+				<option value="tutor">Tutor</option>
+			</select>
+
+
+			<div class="card">
+				<audio id="contact-audio" autoplay></audio>
+			</div>
+		</ons-page>
+	</ons-template>
+
+
+</body>
+
+</html>
