@@ -10,7 +10,6 @@ ons.ready(function () {
 	var smartHome = new SmartHome();
 });
 
-
 //here we define all the functionalities
 function SmartHome() {
 	var peer;
@@ -26,6 +25,7 @@ function SmartHome() {
 		create();
 	});
 
+
 	//Then all the functions
 
 
@@ -34,7 +34,7 @@ function SmartHome() {
 		var self = this;
 		var id = $('#client').find(":selected").val();
 		peer = new Peer(id, {
-			key: 'eff3gmdpo4t8d7vi'
+			key: '174he8v79sbgldi'
 		});
 		peer.on('open', function (id) {
 			$("#connect").show();
@@ -62,23 +62,33 @@ function SmartHome() {
 
 	function connect() {
 		var id = $('#client').find(":selected").val();
-		var self = this;
-		id == "home" ? id = "tutor" : id = "home";
+		if (id == "home") {
+			id = "tutor";
+		} else {
+			id = "home";
+		}
 		conn = peer.connect(id);
 
 		conn.on('open', function () {
 			conn.on('data', function (data) {
 				window.console.log('Received', data);
+				if (data == "closeCall") {
+					$("#stopCall").hide();
+					$("#connect").show();
+				}
 			});
 			call(id);
 		});
+
+
 	}
 
-	function call(id) {
+	function call(id, self) {
 		getAudio(
 			function (MediaStream) {
 				var call = peer.call(id, MediaStream);
 				call.on('stream', onReceiveStream);
+				closeHandler(call);
 			},
 			function (err) {
 				window.alert("error");
@@ -97,13 +107,26 @@ function SmartHome() {
 			}
 		);
 		call.on('stream', onReceiveStream);
+		closeHandler(call);
+
+	}
+
+	function closeHandler(call) {
+		$("#stopCall").click(function () {
+			call.close();
+			$("#stopCall").hide();
+			$("#connect").show();
+		});
+
+
 	}
 
 	function onReceiveStream(stream) {
 			var audio = document.getElementById('contact-audio');
 			audio.src = window.URL.createObjectURL(stream);
 			audio.onloadedmetadata = function () {
-				window.alert("call started");
+				$("#connect").hide();
+				$("#stopCall").show();
 			};
 
 		}
