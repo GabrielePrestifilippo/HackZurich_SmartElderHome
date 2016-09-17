@@ -1,32 +1,152 @@
 /*jslint browser:true */
-/*global $:false, cordova:false, ons:false, Peer:false */
+/*global $:false, cordova:false, ons:false, Peer:false, DecibelMeter, SpeechRecognition */
+
+var audioSources;
+var meter;
+var recognizer;
+var conn;
 
 
-/*
-Ready function: Everything should be called after the device is ready, so inside this function.
-*/
+
+
+
 ons.ready(function () {
+
+
 	//Initialize the application
 	var smartHome = new SmartHome();
+
+
+
 });
 
+
 //here we define all the functionalities
-function SmartHome() {
+function SmartHome(meter) {
 	var peer;
-	var conn;
+
+	var recording = 0;
 
 
-	//First the click handler
+
+
+	//Initialize Audio Detector
+	var dec = new DecibelMeter(window, navigator, document);
+	meter = dec.create('meter');
+
+	meter.on('ready', function (meter, sources) {
+		audioSources = sources;
+		meter.connect(audioSources[0]);
+	});
+
+	meter.on('sample', sampleReceived);
+
+
+
+	//Initialize Speech recognition
+	window.SpeechRecognition = window.SpeechRecognition ||
+		window.webkitSpeechRecognition ||
+		null;
+
+	recognizer = new SpeechRecognition();
+	recognizer.lang = "en-US";
+	recognizer.continuous = true;
+	recognizer.interimResults = false;
+	var transcription;
+
+
+	recognizer.addEventListener('result', function (event) {
+		transcription = '';
+		for (var i = event.resultIndex; i < event.results.length; i++) {
+			if (event.results[i].isFinal) {
+				transcription = event.results[i][0].transcript;
+				window.console.log(transcription);
+				sendContentToGoogle(transcription);
+			}
+		}
+	});
+
+	recognizer.addEventListener('end', function () {
+		recording = 0;
+		meter.listen();
+	});
+
+
+
+	//Instantiate the click handlers
+	$("#choose").click(function () {
+		create();
+		$("#connect").show();
+	});
+
+
 	$("#connect").click(function () {
 		connect();
+		$("#startCall").show();
+		$("#connect").hide();
 	});
 
-	$("#create").click(function () {
-		create();
-	});
 
+
+	$("#startCall").click(function () {
+		var id = $('#client').find(":selected").val();
+
+		if (id == "home") {
+			id = "tutor";
+		} else {
+			id = "home";
+		}
+		call(id);
+	});
 
 	//Then all the functions
+
+
+	/* ---------------- SPEECH RECOGNITION ---------------- */
+	function sampleReceived(dB, percent, value) {
+		if (percent > 0.3) {
+			if (!recording) {
+				meter.stopListening();
+				recording = 1;
+				try {
+					recordAudio();
+				} catch (e) {
+					console.log(e);
+					meter.listen();
+				}
+			}
+		}
+	}
+
+	function recordAudio() {
+			recognizer.start();
+			setTimeout(function () {
+				recognizer.stop();
+			}, 10000);
+		}
+		/* ---------------- SPEECH RECOGNITION ---------------- */
+
+
+	/* ---------------- SPEECH ANALYSIS ---------------- */
+	function sendContentToGoogle(text) {
+
+	}
+
+	function textResult(result, text) {
+			var positive = result.positive;
+			var negative = result.negative;
+			if (negative > positive) {
+				meter.stopListening();
+				conn.send({
+					type: "problem",
+					message: "help"
+				});
+			}
+
+		}
+		/* ---------------- SPEECH ANALYSIS ---------------- */
+
+
 
 
 	/* ---------------- WEB RTC AUDIO CALL ---------------- */
@@ -43,6 +163,16 @@ function SmartHome() {
 			window.console.log('My peer ID is: ' + id);
 		});
 		peer.on('call', onReceiveCall);
+
+		peer.on('connection', function (connection) {
+			conn = connection;
+			console.log("someoneConnected");
+			connection.on('open', function () {
+				connection.on('data', function (data) {
+					dataReceivedFunction(data);
+				});
+			});
+		});
 	}
 
 	function getAudio(successCallback, errorCallback) {
@@ -71,19 +201,22 @@ function SmartHome() {
 
 		conn.on('open', function () {
 			conn.on('data', function (data) {
-				window.console.log('Received', data);
-				if (data == "closeCall") {
-					$("#stopCall").hide();
-					$("#connect").show();
-				}
+				dataReceivedFunction(data);
 			});
-			call(id);
 		});
-
-
 	}
 
-	function call(id, self) {
+	function dataReceivedFunction(data) {
+		window.console.log('Received', data);
+		if (data == "closeCall") {
+			$("#stopCall").hide();
+			$("#connect").show();
+		} else if (data.type && data.type == "problem") {
+			alert("problem!");
+		}
+	}
+
+	function call(id) {
 		getAudio(
 			function (MediaStream) {
 				var call = peer.call(id, MediaStream);
@@ -114,6 +247,7 @@ function SmartHome() {
 	function closeHandler(call) {
 		$("#stopCall").click(function () {
 			call.close();
+			conn.send("closeCall");
 			$("#stopCall").hide();
 			$("#connect").show();
 		});
@@ -125,7 +259,7 @@ function SmartHome() {
 			var audio = document.getElementById('contact-audio');
 			audio.src = window.URL.createObjectURL(stream);
 			audio.onloadedmetadata = function () {
-				$("#connect").hide();
+				$("#startCall").hide();
 				$("#stopCall").show();
 			};
 
