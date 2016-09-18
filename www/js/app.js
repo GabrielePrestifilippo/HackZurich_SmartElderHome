@@ -9,7 +9,7 @@ var peer;
 var listening = 0;
 var audio;
 var myStream;
-
+var transcription;
 ons.ready(function () {
     var smartHome = new SmartHome();
 
@@ -49,7 +49,12 @@ function SmartHome() {
                         recordAudio();
                     } catch (e) {
                         console.log(e);
-                        listenStream();
+                        try {
+                            listenStream();
+                        }catch(e){
+                            console.log(e);
+                        }
+
                     }
                 }
                 time=0;
@@ -69,31 +74,39 @@ function SmartHome() {
     //Initialize Speech recognition
 
 
-    var transcription;
 
 
-    function resultCallback(result) {
-        console.log(result);
-        alert(result.results[0][0].transcript);
-    }
 
-    function errorCallback(error) {
-        console.log(error);
-    }
+
+
 
     setTimeout(function() {
+
+        window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition || null;
+
         recognizer = new SpeechRecognition();
-        recognizer.addEventListener('result', function (event) {
-            transcription = '';
-            for (var i = event.resultIndex; i < event.results.length; i++) {
-                if (event.results[i].isFinal) {
-                    transcription = event.results[i][0].transcript;
-                    window.console.log(transcription);
-                    $("#textAlert1").html(transcription);
-                    sendContentToGoogle(transcription);
+        recognizer.continuous = true;
+        recognizer.interimResults = false;
+        recognizer.lang = "en-GB";
+            recognizer.addEventListener('result', function(event) {
+                transcription = '';
+
+                for (var i = event.resultIndex; i < event.results.length; i++) {
+                    if (event.results[i].isFinal) {
+                        transcription = event.results[i][0].transcript;
+
+                    }
                 }
-            }
+            });
+
+        recognizer.addEventListener('end', function() {
+            window.console.log(transcription);
+            $("#textAlert1").html(transcription);
+            sendContentToGoogle(transcription);
+
         });
+
+
     },1000);
 
 
@@ -106,7 +119,7 @@ function SmartHome() {
     setTimeout(function () {
         setInterval(function () {
             takeBGPicture();
-        }, 300000);
+        }, 30000);
     }, 10000);
     //Instantiate the click handlers
     $("#choose").click(function () {
@@ -126,8 +139,6 @@ function SmartHome() {
         connect();
         $("#startCall").show();
         $("#connect").hide();
-        listening = 1;
-        listenStream();
     });
 
 
@@ -135,15 +146,18 @@ function SmartHome() {
         var id = $('#client').find(":selected").val();
 
         if (id == "assisted") {
-            id = "responsible";
+            id = "responsibleTutor";
         } else {
             id = "assisted";
         }
         call(id);
     });
 
-    //Init google API
-    gapi.load('client:auth2', initAuth);
+    //setTimeout(function(){
+        //Init google API
+        //gapi.load('client:auth2', initAuth);
+    //},2000);
+
 
     //Then all the functions
 
@@ -151,7 +165,52 @@ function SmartHome() {
     /* ---------------- FILE UPLOAD ---------------- */
     function uploadWin(r) {
         console.log(JSON.stringify(r));
+try {
+    if (r.faces && r.faces.length > 1) {
 
+        alert("More people than expected!");
+        conn.send({
+            type: "problem",
+            message: "Too many people"
+        });
+    }
+
+    data = r;
+    var result = {};
+    if ( data.faces != undefined || data.faces.length > 0 ) {
+        result.n = data.faces.length;
+        $("#textAlert1").html("<p>people: " + result.n + "</p>");
+
+        $("#textAlert").html("<p>faces:</p>");
+        result.faces = Array();
+        for (k=0; k<data.faces.length; k++) {
+            result.faces[k] = [];
+            result.faces[k].age = data.faces[k].age;
+            result.faces[k].gender = data.faces[k].gender;
+            loaders.push(loadSprite(data.faces[k], k));
+        }
+
+        var tags = "";
+        for (i=0; i<data.tags.length; i++) {
+            tags += data.tags[i].confidence > 0.8 ? data.tags[i].name + "," : "";
+        }
+        result.tags = tags;
+        $("#textAlert1").html($("#textAlert1").html()+"<p>tags: " + result.tags + "</p>");
+
+        var captions = "";
+        for (i=0; i<data.description.captions.length; i++) {
+            captions += data.description.captions[i].confidence > 0.3 ? data.description.captions[i].text + "<br />" : "";
+        }
+        result.captions = captions;
+        $("#textAlert1").html($("#textAlert1").html()+"<p>captions: " + result.captions + "</p>");
+        return result;
+    }
+
+
+
+}catch(e){
+    console.log(e);
+}
     }
 
     function uploadFail(error) {
@@ -269,8 +328,10 @@ function SmartHome() {
 
         setTimeout(function () {
             recognizer.stop();
+            recording=0;
+            listenStream();
 
-        }, 10000);
+        }, 3000);
     }
 
     /* ---------------- SPEECH RECOGNITION ---------------- */
@@ -300,9 +361,6 @@ function SmartHome() {
     /* ---------------- WEB RTC AUDIO CALL ---------------- */
     function create() {
         var id = $('#client').find(":selected").val();
-
-        // var peer = new Peer(id, {　host:'peerjshackzurich.herokuapp.com', port:9000, key:'peerjs'});
-
 
         peer = new Peer(id, {
             key: 'eff3gmdpo4t8d7vi'
@@ -337,7 +395,7 @@ function SmartHome() {
     function connect() {
         var id = $('#client').find(":selected").val();
         if (id == "assisted") {
-            id = "responsible";
+            id = "responsibleTutor";
         } else {
             id = "assisted";
         }

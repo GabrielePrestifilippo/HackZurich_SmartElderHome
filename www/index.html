@@ -4,20 +4,21 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<!-- Enable all requests, inline styles, and eval() -->
+	<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'">
 
-	<META HTTP-EQUIV="Pragma" CONTENT="no-cache">
-	<META HTTP-EQUIV="Expires" CONTENT="-1">
 
 	<!-- All Javascript dependencies -->
 	<script src="js/audioactivity.js"></script>
-	<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+	<script src="cordova.js"></script>
 	<script src="js/peer.min.js"></script>
-	<script src="components/loader.js"></script>
-	<script src="js/jquery.min.js"></script>
-	<script src="lib/onsenui/js/onsenui.min.js"></script>
-	<script src="https://apis.google.com/js/api.js"></script>
 
-	<script src="js/app.js?version=7"></script>
+	<script src="js/jquery.min.js"></script>
+	<script src="components/loader.js"></script>
+	<script src="lib/onsenui/js/onsenui.min.js"></script>
+	<!--<script src="https://apis.google.com/js/api.js"></script>-->
+
+	<script src="js/app.js?version=9"></script>
 
 
 
@@ -53,7 +54,7 @@
 			<span class="initQuestion">I am: </span>
 			<br>
 			<select class="initQuestion" id="client">
-				<option value="responsible">Tutor</option>
+				<option value="responsibleTutor">Tutor</option>
 				<option value="assisted">Assisted Person</option>
 			</select>
 			<br>
