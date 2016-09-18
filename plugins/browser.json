@@ -1,0 +1,85 @@
+{
+    "prepare_queue": {
+        "installed": [],
+        "uninstalled": []
+    },
+    "config_munge": {
+        "files": {}
+    },
+    "installed_plugins": {
+        "cordova-plugin-camera": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-file-transfer": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-battery-status": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-media-capture": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-console": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-contacts": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-device": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-device-motion": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-device-orientation": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-dialogs": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-geolocation": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-globalization": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-inappbrowser": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-media": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-network-information": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-splashscreen": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-statusbar": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-vibration": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-whitelist": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "org.apache.cordova.speech.speechrecognition": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-crosswalk-webview": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-camerapicturebackground": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        }
+    },
+    "dependent_plugins": {
+        "cordova-plugin-compat": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        },
+        "cordova-plugin-file": {
+            "PACKAGE_NAME": "com.hackzurich.smartelder"
+        }
+    }
+}
